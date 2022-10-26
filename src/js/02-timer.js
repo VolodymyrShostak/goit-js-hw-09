@@ -38,13 +38,20 @@ flatpickr(infieldRef, options);
 
 const setTimer = e => {
   const deltaTime = setDate - new Date();
-  const currentTime = convertMs(deltaTime);
+  let currentTime = convertMs(deltaTime);
   daysOutRef.textContent = currentTime.days;
   hoursOutRef.textContent = currentTime.hours;
   minOutRef.textContent = currentTime.minutes;
   secOutRef.textContent = currentTime.seconds;
+  function updateClock() {
+    currentTime = convertMs(deltaTime);
+    if (currentTime <= 0) {
+      clearInterval(timeInterval);
+    }
+  }
+  updateClock();
+  const timeInterval = setInterval(setTimer, 1000);
 };
-
 function convertMs(ms) {
   const second = 1000;
   const minute = second * 60;
