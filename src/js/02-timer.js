@@ -9,49 +9,54 @@ const minOutRef = document.querySelector('[data-minutes]');
 const secOutRef = document.querySelector('[data-seconds]');
 
 btnStartRef.disabled = true;
-
-// let d = new Date();
-// let hours = d.getHours();
-// let minutes = d.getMinutes();
-// let seconds = d.getSeconds();
-
-// function dn(n) {
-//   if (minutes <= 9) minutes = '0' + minutes;
-//   if (seconds <= 9) seconds = '0' + seconds;
-// }
-
+let periodic = null;
 let setDate = 0;
+
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selectedDates[0] < new Date()) {
-      return window.alert('Please choose a date in the future');
-    }
-    btnStartRef.disabled = false;
+    let currentDate = Date.now();
     setDate = selectedDates[0];
+    let difTime = setDate - currentDate;
+    if (difTime < 0) {
+      return window.alert('Please choose a date in the future');
+    } else {
+      btnStartRef.disabled = false;
+    }
+    function setTimer() {
+      btnStartRef.disabled = true;
+      infieldRef.disabled = true;
+      getDate(selectedDates);
+      periodic = setInterval(() => {
+        getDate(selectedDates);
+      }, 1000);
+    }
+    btnStartRef.addEventListener('click', setTimer);
   },
 };
-flatpickr(infieldRef, options);
 
-const setTimer = e => {
-  const deltaTime = setDate - new Date();
-  let currentTime = convertMs(deltaTime);
-  daysOutRef.textContent = currentTime.days;
-  hoursOutRef.textContent = currentTime.hours;
-  minOutRef.textContent = currentTime.minutes;
-  secOutRef.textContent = currentTime.seconds;
-  function updateClock() {
-    currentTime = convertMs(deltaTime);
-    if (currentTime <= 0) {
-      clearInterval(timeInterval);
-    }
+function getDate(selectedDates) {
+  let currentDate = Date.now();
+  let difTime = setDate - currentDate;
+  if (difTime < 1000) {
+    clearInterval(periodic);
   }
-  updateClock();
-  const timeInterval = setInterval(setTimer, 1000);
-};
+  updateTimer(difTime);
+}
+
+function updateTimer(difTime) {
+  let currentTime = convertMs(difTime);
+  daysOutRef.textContent = addLeadingZero(currentTime.days);
+  hoursOutRef.textContent = addLeadingZero(currentTime.hours);
+  minOutRef.textContent = addLeadingZero(currentTime.minutes);
+  secOutRef.textContent = addLeadingZero(currentTime.seconds);
+}
+
+const flat = flatpickr(infieldRef, options);
+
 function convertMs(ms) {
   const second = 1000;
   const minute = second * 60;
@@ -64,8 +69,6 @@ function convertMs(ms) {
 
   return { days, hours, minutes, seconds };
 }
-const addLeadingZero = value => {
-  return value.padStart(2, '0');
-};
-btnStartRef.addEventListener('click', setTimer);
-// const timeInterval = setInterval(setTimer, 1000);
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+}
