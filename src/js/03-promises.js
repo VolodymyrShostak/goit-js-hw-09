@@ -7,8 +7,8 @@ function onFormSubmit(e) {
   let delayData = Number(formData.elements.delay.value);
   const stepData = Number(formData.elements.step.value);
   const amountData = Number(formData.elements.amount.value);
-
   e.target.reset();
+
   for (let amount = 0; amount < amountData; amount += 1)
     createPromise(amount + 1, (delayData += stepData))
       .then(({ position, delay }) => {
@@ -21,7 +21,6 @@ function onFormSubmit(e) {
           npm`❌ Rejected promise ${position} in ${delay}ms`
         );
       });
-
   function createPromise(position, delay) {
     const promise = new Promise((resolve, reject) => {
       const shouldResolve = Math.random() > 0.3;
@@ -33,7 +32,6 @@ function onFormSubmit(e) {
         }
       }, (delay -= stepData));
     });
-
     return promise;
   }
 }
