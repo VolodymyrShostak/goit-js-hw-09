@@ -1,3 +1,4 @@
+import Notiflix from 'notiflix';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -22,7 +23,7 @@ const options = {
     setDate = selectedDates[0];
     let difTime = setDate - currentDate;
     if (difTime < 0) {
-      return window.alert('Please choose a date in the future');
+      return Notiflix.Notify.failure('Please choose a date in the future');
     } else {
       btnStartRef.disabled = false;
     }
