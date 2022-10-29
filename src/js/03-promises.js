@@ -18,7 +18,7 @@ function onFormSubmit(e) {
       })
       .catch(({ position, delay }) => {
         Notiflix.Notify.failure(
-          npm`❌ Rejected promise ${position} in ${delay}ms`
+          `❌ Rejected promise ${position} in ${delay}ms`
         );
       });
   function createPromise(position, delay) {
@@ -30,7 +30,7 @@ function onFormSubmit(e) {
         } else {
           reject({ position, delay });
         }
-      }, (delay -= stepData));
+      }, delay);
     });
     return promise;
   }
