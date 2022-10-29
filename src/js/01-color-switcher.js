@@ -8,6 +8,9 @@ function getRandomHexColor() {
 let timerId = null;
 
 btnStartRef.addEventListener('click', () => {
+  btnStopRef.disabled = false;
+  btnStartRef.disabled = true;
+  bodyRef.style.backgroundColor = getRandomHexColor();
   timerId = setInterval(() => {
     bodyRef.style.backgroundColor = getRandomHexColor();
   }, 1000);
