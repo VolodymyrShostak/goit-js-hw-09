@@ -18,4 +18,6 @@ btnStartRef.addEventListener('click', () => {
 
 btnStopRef.addEventListener('click', () => {
   clearInterval(timerId);
+  btnStopRef.disabled = true;
+  btnStartRef.disabled = false;
 });
