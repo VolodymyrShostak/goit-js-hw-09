@@ -10,7 +10,7 @@ function onFormSubmit(e) {
   e.target.reset();
 
   for (let amount = 0; amount < amountData; amount += 1)
-    createPromise(amount + 1, (delayData += stepData))
+    createPromise(amount + 1, delayData + stepData * amount)
       .then(({ position, delay }) => {
         Notiflix.Notify.success(
           `✅ Fulfilled promise ${position} in ${delay}ms`
