@@ -11,7 +11,7 @@ const secOutRef = document.querySelector('[data-seconds]');
 
 btnStartRef.disabled = true;
 let periodic = null;
-let setDate = 0;
+let setDate = new Date();
 
 const options = {
   enableTime: true,
@@ -19,41 +19,36 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    let currentDate = Date.now();
-    setDate = selectedDates[0];
-    let difTime = setDate - currentDate;
-    if (difTime < 0) {
+    let currentDate = new Date();
+
+    if (currentDate >= selectedDates[0]) {
+      btnStartRef.disabled = true;
       return Notiflix.Notify.failure('Please choose a date in the future');
     } else {
       btnStartRef.disabled = false;
+      setDate = selectedDates[0];
     }
-    function setTimer() {
-      btnStartRef.disabled = true;
-      infieldRef.disabled = true;
-      getDate(selectedDates);
-      periodic = setInterval(() => {
-        getDate(selectedDates);
-      }, 1000);
-    }
-    btnStartRef.addEventListener('click', setTimer);
   },
 };
+btnStartRef.addEventListener('click', () => {
+  btnStartRef.disabled = true;
+  infieldRef.disabled = true;
 
-function getDate(selectedDates) {
-  let currentDate = Date.now();
+  periodic = setInterval(updateTimer, 1000);
+});
+
+function updateTimer() {
+  let currentDate = new Date();
   let difTime = setDate - currentDate;
-  if (difTime < 1000) {
-    clearInterval(periodic);
-  }
-  updateTimer(difTime);
-}
-
-function updateTimer(difTime) {
   let currentTime = convertMs(difTime);
   daysOutRef.textContent = addLeadingZero(currentTime.days);
   hoursOutRef.textContent = addLeadingZero(currentTime.hours);
   minOutRef.textContent = addLeadingZero(currentTime.minutes);
   secOutRef.textContent = addLeadingZero(currentTime.seconds);
+  if (difTime < 1000) {
+    clearInterval(periodic);
+  }
+  updateTimer(difTime);
 }
 
 const flat = flatpickr(infieldRef, options);
