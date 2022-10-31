@@ -12,6 +12,13 @@ const secOutRef = document.querySelector('[data-seconds]');
 btnStartRef.disabled = true;
 let periodic = null;
 
+function renewTimer({ days, hours, minutes, seconds }) {
+  daysOutRef.textContent = addLeadingZero(days);
+  hoursOutRef.textContent = addLeadingZero(hours);
+  minOutRef.textContent = addLeadingZero(minutes);
+  secOutRef.textContent = addLeadingZero(seconds);
+}
+
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -30,8 +37,15 @@ function togglesBtn() {
   btnStartRef.disabled = true;
   infieldRef.disabled = true;
 }
+function setTimer() {
+  let difTime = new Date(infieldRef.value) - Date.now();
+  let currentTime = convertMs(difTime);
+  renewTimer(currentTime);
+}
+
 btnStartRef.addEventListener('click', () => {
   togglesBtn();
+  setTimer();
   periodic = setInterval(updateTimer, 1000);
 });
 
@@ -42,12 +56,6 @@ function updateTimer() {
   if (difTime < 1000) {
     clearInterval(periodic);
   }
-}
-function renewTimer({ days, hours, minutes, seconds }) {
-  daysOutRef.textContent = addLeadingZero(days);
-  hoursOutRef.textContent = addLeadingZero(hours);
-  minOutRef.textContent = addLeadingZero(minutes);
-  secOutRef.textContent = addLeadingZero(seconds);
 }
 
 const flat = flatpickr(infieldRef, options);
